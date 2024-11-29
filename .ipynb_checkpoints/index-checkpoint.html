@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protein Viewer</title>
+    <script src="https://cdn.jsdelivr.net/npm/3dmol@2.0.4/build/3Dmol-min.js"></script>
+    <script src="assets/js/viewer.js" defer></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        #viewer {
+            width: 100%;
+            height: 500px;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+        }
+        input, button {
+            font-size: 16px;
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Protein Structure Viewer</h1>
+    <p>Enter a PDB ID to visualize the structure:</p>
+    <input type="text" id="pdbInput" placeholder="e.g., 2IWI">
+    <button onclick="loadPDB()">Load PDB</button>
+
+    <div id="viewer"></div>
+
+    <p>Example PDB IDs: 2IWI, 4N49, 7RPZ</p>
+</body>
+</html>

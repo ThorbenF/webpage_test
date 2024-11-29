@@ -1,0 +1,6 @@
+# Jekyll configuration for GitHub Pages
+title: "Protein Structure Viewer"
+description: "A simple Jekyll site to visualize protein structures from PDB files using py3Dmol."
+theme: minima
+plugins:
+  - jekyll-assets
