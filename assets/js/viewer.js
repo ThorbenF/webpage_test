@@ -1,6 +1,7 @@
 async function loadStructure() {
     const pdbId = document.getElementById('pdbInput').value.trim().toUpperCase();
-    if (!pdbId) {
+    const sequence = document.getElementById('sequenceInput').value.trim().toUpperCase(); // Get sequence input dynamically
+    if (!pdbId || !sequence) {
         return; // Do nothing if input is empty
     }
 
@@ -28,4 +29,51 @@ async function loadStructure() {
     viewer.setStyle({}, { cartoon: { color: "spectrum" } });
     viewer.zoomTo();
     viewer.render();
+
+    // Show loading message while waiting for scores
+    const scoresContainer = document.getElementById('scoresContainer');
+    scoresContainer.innerHTML = "<p>Loading scores, please wait...</p>";
+
+    // Now fetch the scores from Hugging Face
+    const modelUrl = "https://huggingface.co/spaces/ThorbenF/test_webpage/api/predict";  // Hugging Face Space API endpoint
+
+    try {
+        const response = await fetch(modelUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                inputs: sequence,  // Send the sequence to the model
+            }),
+        });
+
+        // Parse the JSON response from the Hugging Face Space
+        const data = await response.json();
+        const scores = data?.predictions;  // Assuming predictions are in this field, adjust accordingly
+        
+        if (scores) {
+            displayScores(scores);  // Function to display scores
+        } else {
+            console.error("No scores returned from Hugging Face");
+            scoresContainer.innerHTML = "<p>Error fetching scores</p>";
+        }
+    } catch (error) {
+        console.error("Error fetching scores from Hugging Face:", error);
+        scoresContainer.innerHTML = "<p>Error fetching scores</p>";
+    }
+}
+
+// Function to display the scores
+function displayScores(scores) {
+    const scoresContainer = document.getElementById('scoresContainer');  // Make sure you have an element to display scores
+    scoresContainer.innerHTML = "";  // Clear previous scores
+
+    // Display scores for each residue
+    scores.forEach((score, index) => {
+        const aminoAcid = "A";  // Here we are assuming the sequence is 'A' for each residue
+        const scoreText = document.createElement('p');
+        scoreText.textContent = `${aminoAcid} (Position ${index + 1}): ${score.toFixed(2)}`;
+        scoresContainer.appendChild(scoreText);
+    });
 }
